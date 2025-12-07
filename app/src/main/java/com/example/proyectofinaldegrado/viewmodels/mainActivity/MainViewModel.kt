@@ -117,7 +117,11 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-
+    fun getAllLibraryItems(): List<UserLibraryItem> {
+        return runBlocking {
+            userRepository.getAllLibraryItems()
+        }
+    }
 
 }
 

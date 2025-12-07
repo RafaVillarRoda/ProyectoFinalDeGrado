@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.copy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -50,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -166,7 +169,7 @@ fun AppNavHost(
 
         ) {
         composable(Destination.HOME.route) { HomeScreen(userLibrary = userLibrary) }
-        composable(Destination.LIBRARY.route) { AddScreen() }
+        composable(Destination.LIBRARY.route) { libraryScreen(userLibrary = userLibrary, navController = navController, mainViewModel = mainViewModel  ) }
         composable(Destination.PROFILE.route) { ProfileScreen(navController = navController) }
         dialog(route = Destination.ADD_ITEM.route) {
             AddDialog(
@@ -250,7 +253,9 @@ fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
                         .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
                 )
                 Column(
-                modifier = Modifier.fillMaxSize() .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
                         dayOfMonth()
@@ -518,14 +523,151 @@ fun AddDialog(
 }
 
 
-
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "Pantalla de añadido")
+fun SearchDialog(
+    onDismiss: () -> Unit,
+    onSave: () -> Unit,
+    mainViewModel: MainViewModel,
+
+    ) {
+    var rating by rememberSaveable { mutableIntStateOf(0) }
+    var text by rememberSaveable { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(false) }
+    var selectedItem: MediaItem?  by remember { mutableStateOf<MediaItem?>(null) }
+
+    val itemTypes = listOf("Libro", "Película", "Serie")
+    var selectedItemType by rememberSaveable { mutableStateOf(itemTypes.first()) }
+
+    val context = LocalContext.current
+
+    FilteredSearchBar(
+        onSearch = { active = true },
+        searchResults = mainViewModel.getAllBooks(text),
+        onResultClick = { item ->
+            text = item.title
+            selectedItem = item
+        },
+        query = text,
+        onQueryChange = {
+            text = it
+            if (it.isBlank()) {
+                selectedItem = null
+            }
+        },
+    ) }
+
+@OptIn( ExperimentalMaterial3Api::class)
+@Composable
+fun libraryScreen(
+    navController: NavHostController,
+    userLibrary: UserFullLibrary?,
+    mainViewModel: MainViewModel?
+) {
+    // 1. Estados para controlar la búsqueda
+    var isSearchActive by rememberSaveable { mutableStateOf(false) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            // 3. Cambia la TopAppBar según si la búsqueda está activa o no
+            if (isSearchActive) {
+                // --- BARRA DE BÚSQUEDA ACTIVA ---
+                TopAppBar(
+                    title = {
+                        // Campo de texto para la búsqueda
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("Buscar en tu biblioteca...") },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                            ),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Search
+                            )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            isSearchActive = false
+                            searchQuery = ""
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Cerrar búsqueda"
+                            )
+                        }
+                    }
+                )
+            } else {
+                TopAppBar(
+                    title = { Text("Biblioteca") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Ir hacia atrás"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { isSearchActive = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Buscar"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    ) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(28.dp)
+        ) {
+            if (userLibrary != null && userLibrary.libraryItems.isNotEmpty()) {
+                val libraryItems = userLibrary.libraryItems
+
+                val filteredBooks = userLibrary.books.filter {
+                    it.bookTitle.contains(searchQuery, ignoreCase = true)
+                }
+                val filteredFilms = userLibrary.films.filter {
+                    it.filmTitle.contains(searchQuery, ignoreCase = true)
+                }
+                val filteredSeries = userLibrary.series.filter {
+                    it.serieTitle.contains(searchQuery, ignoreCase = true)
+                }
+
+                items(filteredBooks) { book ->
+                    val libraryItemInfo = libraryItems.find { it.itemId == book.bookTitle && it.itemType == "book" }
+                    FilledItemCard(item = book, libraryItem = libraryItemInfo)
+                }
+                items(filteredFilms) { film ->
+                    val libraryItemInfo = libraryItems.find { it.itemId == film.filmTitle && it.itemType == "film" }
+                    FilledItemCard(item = film, libraryItem = libraryItemInfo)
+                }
+                items(filteredSeries) { serie ->
+                    val libraryItemInfo = libraryItems.find { it.itemId == serie.serieTitle && it.itemType == "serie" }
+                    FilledItemCard(item = serie, libraryItem = libraryItemInfo)
+                }
+            }
+        }
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

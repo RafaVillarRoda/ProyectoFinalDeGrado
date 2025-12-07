@@ -87,6 +87,10 @@ class UserRepository(
         return serieDao.getAllSeries()
     }
 
+    suspend fun getAllLibraryItems(): List<UserLibraryItem> {
+        return userDao.getAllLibraryItems()
+    }
+
 
 
 

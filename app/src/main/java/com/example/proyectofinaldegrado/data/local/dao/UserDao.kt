@@ -1,5 +1,6 @@
 package com.example.proyectofinaldegrado.data.local.dao
 
+import android.content.ClipData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -39,6 +40,9 @@ interface UserDao {
 
     @Query("SELECT * FROM user_library WHERE userName = :userName")
     suspend fun getLibraryItemsForUser(userName: String): List<UserLibraryItem>
+
+    @Query("SELECT * FROM user_library")
+    suspend fun getAllLibraryItems(): List<UserLibraryItem>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLibraryItem(item: UserLibraryItem)
