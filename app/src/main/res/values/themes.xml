@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!-- Nuevo tema personalizado con tonos beige -->
+    <style name="Theme.ProyectoFinalDeGrado.Beige" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Colores principales de la app -->
+        <item name="colorPrimary">@color/default_button</item>
+        <item name="colorOnPrimary">@color/text_dark</item>
+
+        <!-- Colores secundarios para botones y acentos -->
+        <item name="colorSecondary">@color/beige_accent</item>
+        <item name="colorOnSecondary">@color/text_dark</item>
+
+        <!-- Color de fondo de la aplicación -->
+        <item name="android:windowBackground">@color/background_color</item>
+        
+        <!-- Color de la barra de estado -->
+        <item name="android:statusBarColor">@color/default_button</item>
+
+        <!-- Color por defecto del texto -->
+        <item name="android:textColor">@color/text_dark</item>
+    </style>
+
+</resources>

@@ -1,0 +1,139 @@
+[
+  {
+    "serieTitle": "Breaking Bad",
+    "releaseDate": "2008",
+    "director": "Vince Gilligan",
+    "genre": "Crime",
+    "chapters": "62",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Game of Thrones",
+    "releaseDate": "2011",
+    "director": "David Benioff, D. B. Weiss",
+    "genre": "Fantasy",
+    "chapters": "73",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Stranger Things",
+    "releaseDate": "2016",
+    "director": "The Duffer Brothers",
+    "genre": "Sci-Fi",
+    "chapters": "34",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "The Witcher",
+    "releaseDate": "2019",
+    "director": "Lauren Schmidt Hissrich",
+    "genre": "Fantasy",
+    "chapters": "24",
+    "rating": "4",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "The Mandalorian",
+    "releaseDate": "2019",
+    "director": "Jon Favreau",
+    "genre": "Sci-Fi",
+    "chapters": "24",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "The Boys",
+    "releaseDate": "2019",
+    "director": "Eric Kripke",
+    "genre": "Superhero",
+    "chapters": "32",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "The Office",
+    "releaseDate": "2005",
+    "director": "Greg Daniels",
+    "genre": "Comedy",
+    "chapters": "201",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Parks and Recreation",
+    "releaseDate": "2009",
+    "director": "Greg Daniels, Michael Schur",
+    "genre": "Comedy",
+    "chapters": "125",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Sherlock",
+    "releaseDate": "2010",
+    "director": "Mark Gatiss, Steven Moffat",
+    "genre": "Crime",
+    "chapters": "13",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Dark",
+    "releaseDate": "2017",
+    "director": "Baran bo Odar",
+    "genre": "Sci-Fi",
+    "chapters": "26",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Westworld",
+    "releaseDate": "2016",
+    "director": "Jonathan Nolan, Lisa Joy",
+    "genre": "Sci-Fi",
+    "chapters": "36",
+    "rating": "4",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Chernobyl",
+    "releaseDate": "2019",
+    "director": "Johan Renck",
+    "genre": "Drama",
+    "chapters": "5",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "True Detective",
+    "releaseDate": "2014",
+    "director": "Nic Pizzolatto",
+    "genre": "Crime",
+    "chapters": "32",
+    "rating": "4.5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "Better Call Saul",
+    "releaseDate": "2015",
+    "director": "Vince Gilligan, Peter Gould",
+    "genre": "Crime",
+    "chapters": "63",
+    "rating": "5",
+    "additionDate": ""
+  },
+  {
+    "serieTitle": "House of the Dragon",
+    "releaseDate": "2022",
+    "director": "Ryan Condal",
+    "genre": "Fantasy",
+    "chapters": "10",
+    "rating": "4",
+    "additionDate": ""
+  }
+
+]
+

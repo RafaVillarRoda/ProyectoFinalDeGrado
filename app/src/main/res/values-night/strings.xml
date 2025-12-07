@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Welcome">Bienvenido</string>
+    <string name="new_to_platform">Eres nuevo en la plataforma? Registrate</string>
+    <string name="crea_una_cuenta">Crea una cuenta</string>
+    <string name="createAccount_btm">crear una cuenta</string>
+    <string name="confirma_la_contrase_a">Confirma la contraseña</string>
+</resources>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Login"
+    android:background="@color/background_color">
+
+    <TextView
+        android:id="@+id/WelcomeTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="35sp"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        android:layout_margin="40dp"
+        android:text="@string/Welcome"
+        />
+    <EditText
+        android:id="@+id/UserTv"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@id/WelcomeTv"
+        app:layout_constraintBottom_toBottomOf="@id/PasswordTv"
+        android:layout_margin="40dp"
+        android:hint="@string/user_placeholder"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        android:background="@drawable/edittext_rounded_corners"
+        />
+    <EditText
+        android:id="@+id/PasswordTv"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@+id/UserTv"
+        android:layout_marginTop="80dp"
+        android:layout_margin="40dp"
+        android:hint="@string/password_et"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        android:background="@drawable/edittext_rounded_corners"
+
+        />
+
+
+    <Button
+        android:id="@+id/LoginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_margin="40dp"
+        android:background="@drawable/button_rounded_beige"
+        app:backgroundTint="@null"
+        android:text="@string/login"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PasswordTv"
+
+        app:layout_constraintVertical_bias="0.507"
+        tools:layout_editor_absoluteX="40dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/NewToPlatformTv"
+        android:layout_margin="40dp"
+        android:text="@string/new_to_platform"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/LoginBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SingUp">
+
+    <TextView
+        android:id="@+id/CreateAccountTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="40dp"
+        android:padding="10dp"
+        android:text="@string/crea_una_cuenta"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/UserSingUpEt"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="32dp"
+        android:autofillHints="username"
+        android:background="@drawable/edittext_rounded_corners"
+        android:hint="@string/user_placeholder"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/CreateAccountTv" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/PasswordSingUpTil"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/UserSingUpEt"
+        app:endIconMode="password_toggle"
+        app:boxBackgroundMode="none">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/PasswordSingUpEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/text_dark"
+            android:background="@drawable/edittext_rounded_corners"
+            android:hint="@string/password_et"
+            android:padding="20dp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/PasswordSingUpConfirmationTil"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/PasswordSingUpTil"
+        app:endIconMode="password_toggle"
+        app:boxBackgroundMode="none"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/PasswordSingUpConfirmationEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/text_dark"
+            android:background="@drawable/edittext_rounded_corners"
+            android:hint="@string/password_et"
+            android:padding="20dp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+
+
+    <Button
+        android:id="@+id/SingUpBtn"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="64dp"
+        android:background="@drawable/button_rounded_beige"
+        android:text="@string/createAccount_btm"
+        android:textAlignment="center"
+        android:textColor="@color/text_dark"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
