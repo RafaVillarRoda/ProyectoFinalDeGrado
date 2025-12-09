@@ -11,16 +11,16 @@ data class Film(
     val filmTitle: String,
 
     @ColumnInfo(name = "release_date")
-    val releaseDate: String?,
+    val releaseDate: String,
 
     @ColumnInfo(name = "director")
-    val director: String?,
+    val director: String,
 
     @ColumnInfo(name = "genre")
-    override val genre: String?,
+    override val genre: String,
 
     @ColumnInfo(name = "duration")
-    val duration: String?,
+    val duration: String,
 
     @ColumnInfo(name = "rating")
     val rating: String?,
@@ -30,11 +30,11 @@ data class Film(
 ):MediaItem {
     override val title: String
     get() = filmTitle
-    override val author: String?
+    override val author: String
     get() = director
-    val genr: String?
+    val genr: String
     get() = genre
     override val dur: Int
-    get() = duration?.toIntOrNull() ?: 0
+    get() = duration.toIntOrNull() ?: 0
 
 }

@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.copy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -90,7 +89,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProyectoFinalDeGradoTheme {
                 val userLibraryState by mainViewModel.userLibrary.collectAsStateWithLifecycle()
-                MainAppScaffold(userLibrary = userLibraryState, mainViewModel = mainViewModel)
+                userLibraryState?.let {
+                    MainAppScaffold(
+                        userLibrary = it,
+                        mainViewModel = mainViewModel
+                    )
+                }
             }
         }
     }
@@ -113,7 +117,7 @@ enum class Destination(
 
 @Composable
 fun MainAppScaffold(
-    modifier: Modifier = Modifier, userLibrary: UserFullLibrary?, mainViewModel: MainViewModel
+    modifier: Modifier = Modifier, userLibrary: UserFullLibrary, mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     val startDestination = Destination.HOME
@@ -121,27 +125,27 @@ fun MainAppScaffold(
 
     Scaffold(
         modifier = modifier, bottomBar = {
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            windowInsets = NavigationBarDefaults.windowInsets
-        ) {
-            Destination.entries.filter { it.icon != 0 }.forEachIndexed { index, destination ->
-                NavigationBarItem(selected = selectedDestination == index, onClick = {
-                    if (selectedDestination != index) {
-                        navController.navigate(route = destination.route)
-                        selectedDestination = index
-                    }
-                }, icon = {
-                    Icon(
-                        painter = painterResource(id = destination.icon),
-                        contentDescription = destination.contentDescription
-                    )
-                }, label = { Text(destination.label) })
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                windowInsets = NavigationBarDefaults.windowInsets
+            ) {
+                Destination.entries.filter { it.icon != 0 }.forEachIndexed { index, destination ->
+                    NavigationBarItem(selected = selectedDestination == index, onClick = {
+                        if (selectedDestination != index) {
+                            navController.navigate(route = destination.route)
+                            selectedDestination = index
+                        }
+                    }, icon = {
+                        Icon(
+                            painter = painterResource(id = destination.icon),
+                            contentDescription = destination.contentDescription
+                        )
+                    }, label = { Text(destination.label) })
+                }
             }
-        }
-    }, floatingActionButton = {
-        AddButton(navController = navController)
-    }, floatingActionButtonPosition = FabPosition.End
+        }, floatingActionButton = {
+            AddButton(navController = navController)
+        }, floatingActionButtonPosition = FabPosition.End
     ) { contentPadding ->
         AppNavHost(
             navController = navController,
@@ -159,7 +163,7 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: Destination,
     modifier: Modifier = Modifier,
-    userLibrary: UserFullLibrary?,
+    userLibrary: UserFullLibrary,
     mainViewModel: MainViewModel
 ) {
     NavHost(
@@ -169,7 +173,13 @@ fun AppNavHost(
 
         ) {
         composable(Destination.HOME.route) { HomeScreen(userLibrary = userLibrary) }
-        composable(Destination.LIBRARY.route) { libraryScreen(userLibrary = userLibrary, navController = navController, mainViewModel = mainViewModel  ) }
+        composable(Destination.LIBRARY.route) {
+            libraryScreen(
+                userLibrary = userLibrary,
+                navController = navController,
+                mainViewModel = mainViewModel
+            )
+        }
         composable(Destination.PROFILE.route) { ProfileScreen(navController = navController) }
         dialog(route = Destination.ADD_ITEM.route) {
             AddDialog(
@@ -183,7 +193,7 @@ fun AppNavHost(
 }
 
 @Composable
-fun HomeScreen(userLibrary: UserFullLibrary?) {
+fun HomeScreen(userLibrary: UserFullLibrary) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -191,15 +201,16 @@ fun HomeScreen(userLibrary: UserFullLibrary?) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
-        item {
-            Text(
-                text = "Carrusel Principal",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
-            )
+
+        if (userLibrary.libraryItems.isNotEmpty()) {
+            item {
+
+                LastestCarousel(userLibrary = userLibrary)
+
+            }
         }
-        item { CarouselExample_MultiBrowse() }
-        if (userLibrary != null &&  userLibrary.libraryItems.isNotEmpty()) {
+
+        if (userLibrary.libraryItems.isNotEmpty()) {
             val libraryItem = userLibrary.libraryItems
             items(userLibrary.books) { book ->
 
@@ -253,9 +264,9 @@ fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
                         .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
                 )
                 Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
                         dayOfMonth()
@@ -265,8 +276,8 @@ fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
                         year()
                     }
                     Text(text = "Titulo: ${item.title}", textAlign = TextAlign.Center)
-                    Text(text = "Autor: ${item.author}" , textAlign = TextAlign.Center)
-                    Text(text = "Genero: ${item.genre}" , textAlign = TextAlign.Center)
+                    Text(text = "Autor: ${item.author}", textAlign = TextAlign.Center)
+                    Text(text = "Genero: ${item.genre}", textAlign = TextAlign.Center)
                     Text(text = "Numero de páginas: ${item.dur}", textAlign = TextAlign.Center)
                     Row() {
                         Text(text = "Calificación: ", textAlign = TextAlign.Center)
@@ -278,7 +289,10 @@ fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
                                 tint = if (i <= libraryItem.rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                     }
-                    Text(text = "Fecha de adición: ${libraryItem?.additionDate?.format(dateFormat) ?: "Sin fecha de adición"}", textAlign = TextAlign.Center)
+                    Text(
+                        text = "Fecha de adición: ${libraryItem?.additionDate?.format(dateFormat) ?: "Sin fecha de adición"}",
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 
@@ -288,18 +302,28 @@ fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarouselExample_MultiBrowse() {
+fun LastestCarousel(userLibrary: UserFullLibrary) {
+
+    val libraryItem = userLibrary.libraryItems
+
+
     data class CarouselItem(
         val id: Int, @DrawableRes val imageResId: Int, val contentDescription: String
     )
 
     val items = remember {
-        listOf(
-            CarouselItem(1, R.drawable.ic_launcher_background, "item 1"),
-            CarouselItem(2, R.drawable.ic_launcher_background, "item 2"),
-            CarouselItem(3, R.drawable.ic_launcher_background, "item 3"),
-            CarouselItem(4, R.drawable.ic_launcher_background, "item 4"),
-        )
+
+
+        val lastAdded = libraryItem.sortedBy { it.additionDate }.takeLast(5)
+
+
+        lastAdded.mapIndexed { index, item ->
+            CarouselItem(
+                id = index,
+                imageResId = R.drawable.melvin_test_image,
+                contentDescription = item.itemId
+            )
+        }
     }
     HorizontalMultiBrowseCarousel(
         state = rememberCarouselState { items.count() },
@@ -320,6 +344,7 @@ fun CarouselExample_MultiBrowse() {
         )
     }
 }
+
 
 @Composable
 fun AddButton(navController: NavHostController) {
@@ -362,7 +387,7 @@ fun AddDialog(
     var rating by rememberSaveable { mutableIntStateOf(0) }
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
-    var selectedItem: MediaItem?  by remember { mutableStateOf<MediaItem?>(null) }
+    var selectedItem: MediaItem? by remember { mutableStateOf<MediaItem?>(null) }
 
     val itemTypes = listOf("Libro", "Película", "Serie")
     var selectedItemType by rememberSaveable { mutableStateOf(itemTypes.first()) }
@@ -375,42 +400,52 @@ fun AddDialog(
         topBar = {
             TopAppBar(
                 title = { Text("Añadir Nuevo Elemento") }, navigationIcon = {
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.close_icon
-                        ), contentDescription = "Cerrar"
-                    )
-                }
-            }, actions = {
-                IconButton(onClick = {
-                    val itemToSave = selectedItem
-                    if (itemToSave == null) {
-                        Toast.makeText(context, "No has seleccionado ningún elemento.", Toast.LENGTH_SHORT).show()
-                    } else if (mainViewModel.getItemName(itemToSave.title) != null) {
-                        Toast.makeText(context, "El elemento ya existe en tu biblioteca.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        when (itemToSave) {
-                            is Book -> {
-                                mainViewModel.addBookToLibrary(itemToSave, rating)
-                                onSave()
-                            }
-                            is Film -> {
-                                mainViewModel.addFilmToLibrary(itemToSave, rating)
-                                onSave()
-                            }
-                            is Serie -> {
-                                mainViewModel.addSerieToLibrary(itemToSave, rating)
-                                onSave()
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.close_icon
+                            ), contentDescription = "Cerrar"
+                        )
+                    }
+                }, actions = {
+                    IconButton(onClick = {
+                        val itemToSave = selectedItem
+                        if (itemToSave == null) {
+                            Toast.makeText(
+                                context,
+                                "No has seleccionado ningún elemento.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else if (mainViewModel.getItemName(itemToSave.title) != null) {
+                            Toast.makeText(
+                                context,
+                                "El elemento ya existe en tu biblioteca.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            when (itemToSave) {
+                                is Book -> {
+                                    mainViewModel.addBookToLibrary(itemToSave, rating)
+                                    onSave()
+                                }
+
+                                is Film -> {
+                                    mainViewModel.addFilmToLibrary(itemToSave, rating)
+                                    onSave()
+                                }
+
+                                is Serie -> {
+                                    mainViewModel.addSerieToLibrary(itemToSave, rating)
+                                    onSave()
+                                }
                             }
                         }
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.save_icon),
+                            contentDescription = "Guardar"
+                        )
                     }
-                }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.save_icon),
-                        contentDescription = "Guardar"
-                    )
-                }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -432,29 +467,29 @@ fun AddDialog(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-           MultiChoiceSegmentedButtonRow(
-               modifier = Modifier
-                   .fillMaxWidth()
-           ) {
-               itemTypes.forEachIndexed { index, label ->
-                   SegmentedButton(
-                      shape = RoundedCornerShape(16.dp),
-                       onCheckedChange = {
-                           selectedItemType = label
-                           text = ""
-                           selectedItem = null
-                       },
-                       checked = selectedItemType == label,
-                       icon = {
-                           SegmentedButtonDefaults.Icon(active = selectedItemType == label)
-                       }
+            MultiChoiceSegmentedButtonRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                itemTypes.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        shape = RoundedCornerShape(16.dp),
+                        onCheckedChange = {
+                            selectedItemType = label
+                            text = ""
+                            selectedItem = null
+                        },
+                        checked = selectedItemType == label,
+                        icon = {
+                            SegmentedButtonDefaults.Icon(active = selectedItemType == label)
+                        }
 
-                   ) {
-                       Text(text = label)
-                   }
-               }
-           }
-            when{
+                    ) {
+                        Text(text = label)
+                    }
+                }
+            }
+            when {
                 selectedItemType == "Libro" -> {
                     FilteredSearchBar(
                         onSearch = { active = true },
@@ -472,6 +507,7 @@ fun AddDialog(
                         },
                     )
                 }
+
                 selectedItemType == "Película" -> {
                     FilteredSearchBar(
                         onSearch = { active = true },
@@ -489,6 +525,7 @@ fun AddDialog(
                         },
                     )
                 }
+
                 selectedItemType == "Serie" -> {
                     FilteredSearchBar(
                         onSearch = { active = true },
@@ -511,7 +548,10 @@ fun AddDialog(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (selectedItem != null) {
-                Text("Calificación para '${selectedItem?.title}'", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Calificación para '${selectedItem?.title}'",
+                    style = MaterialTheme.typography.titleMedium
+                )
                 StarRatingBar(
                     rating = rating,
                     onRatingChanged = { newRating -> rating = newRating }
@@ -534,7 +574,7 @@ fun SearchDialog(
     var rating by rememberSaveable { mutableIntStateOf(0) }
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
-    var selectedItem: MediaItem?  by remember { mutableStateOf<MediaItem?>(null) }
+    var selectedItem: MediaItem? by remember { mutableStateOf<MediaItem?>(null) }
 
     val itemTypes = listOf("Libro", "Película", "Serie")
     var selectedItemType by rememberSaveable { mutableStateOf(itemTypes.first()) }
@@ -555,9 +595,10 @@ fun SearchDialog(
                 selectedItem = null
             }
         },
-    ) }
+    )
+}
 
-@OptIn( ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun libraryScreen(
     navController: NavHostController,
@@ -651,22 +692,24 @@ fun libraryScreen(
                 }
 
                 items(filteredBooks) { book ->
-                    val libraryItemInfo = libraryItems.find { it.itemId == book.bookTitle && it.itemType == "book" }
+                    val libraryItemInfo =
+                        libraryItems.find { it.itemId == book.bookTitle && it.itemType == "book" }
                     FilledItemCard(item = book, libraryItem = libraryItemInfo)
                 }
                 items(filteredFilms) { film ->
-                    val libraryItemInfo = libraryItems.find { it.itemId == film.filmTitle && it.itemType == "film" }
+                    val libraryItemInfo =
+                        libraryItems.find { it.itemId == film.filmTitle && it.itemType == "film" }
                     FilledItemCard(item = film, libraryItem = libraryItemInfo)
                 }
                 items(filteredSeries) { serie ->
-                    val libraryItemInfo = libraryItems.find { it.itemId == serie.serieTitle && it.itemType == "serie" }
+                    val libraryItemInfo =
+                        libraryItems.find { it.itemId == serie.serieTitle && it.itemType == "serie" }
                     FilledItemCard(item = serie, libraryItem = libraryItemInfo)
                 }
             }
         }
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -717,10 +760,11 @@ fun FilteredSearchBar(
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    Box(modifier
-        .fillMaxSize()
-        .semantics { isTraversalGroup = true }
-        .heightIn(max = 250.dp)) {
+    Box(
+        modifier
+            .fillMaxSize()
+            .semantics { isTraversalGroup = true }
+            .heightIn(max = 250.dp)) {
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)

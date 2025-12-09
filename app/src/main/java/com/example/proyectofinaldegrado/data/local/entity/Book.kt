@@ -13,19 +13,19 @@ data class Book(
     val bookTitle: String,
 
     @ColumnInfo(name = "author")
-    override val author: String?,
+    override val author: String,
 
     @ColumnInfo(name = "genre")
-    override val genre: String?,
+    override val genre: String,
 
     @ColumnInfo(name = "pages")
-    val pages: String?,
+    val pages: Int,
 
     @ColumnInfo(name = "rating")
     var rating: Int,
 
     @ColumnInfo(name = "release_date")
-    val releaseDate: String?,
+    val releaseDate: String,
 
     @ColumnInfo(name = "addition_date")
     var additionDate: Instant?,
@@ -34,11 +34,11 @@ data class Book(
     override val title: String
         get() = bookTitle
     val creator: String
-        get() = author ?: ""
+        get() = author
     val genr: String
-        get() = genre ?: ""
+        get() = genre
     override val dur: Int
-        get() = pages?.toIntOrNull() ?: 0
+        get() = pages
 
 }
 

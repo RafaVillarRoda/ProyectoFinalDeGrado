@@ -14,13 +14,13 @@ data class Serie(
     val releaseDate: String?,
 
     @ColumnInfo(name = "director")
-    val director: String?,
+    val director: String,
 
     @ColumnInfo(name = "genre")
-    override val genre: String?,
+    override val genre: String,
 
     @ColumnInfo(name = "chapters")
-    val chapters: String?,
+    val chapters: Int,
 
     @ColumnInfo(name = "rating")
     val rating: String?,
@@ -32,11 +32,11 @@ data class Serie(
     ):MediaItem {
     override val title: String
         get() = serieTitle
-    override val author: String?
+    override val author: String
         get() = director
-    val genr: String?
+    val genr: String
         get() = genre
     override val dur: Int
-        get() = chapters?.toIntOrNull() ?: 0
+        get() = chapters
 
 }
