@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.proyectofinaldegrado.SessionManager
 import com.example.proyectofinaldegrado.data.local.entity.Book
 import com.example.proyectofinaldegrado.data.local.entity.Film
+import com.example.proyectofinaldegrado.data.local.entity.MediaItem
 import com.example.proyectofinaldegrado.data.local.entity.Serie
 import com.example.proyectofinaldegrado.data.local.entity.UserFullLibrary
 import com.example.proyectofinaldegrado.data.local.entity.UserLibraryItem
 import com.example.proyectofinaldegrado.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -120,6 +122,16 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
     fun getAllLibraryItems(): List<UserLibraryItem> {
         return runBlocking {
             userRepository.getAllLibraryItems()
+        }
+    }
+
+    fun deleteItem(item: MediaItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = SessionManager.currentUser
+            if (user != null) {
+                userRepository.deleteItem(user.userName, item.title)
+                loadUserLibrary()
+            }
         }
     }
 

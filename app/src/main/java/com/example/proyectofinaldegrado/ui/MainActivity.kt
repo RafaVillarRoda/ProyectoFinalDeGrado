@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
@@ -39,7 +40,9 @@ import androidx.compose.material3.*
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,8 +55,10 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -166,17 +171,28 @@ fun AppNavHost(
     userLibrary: UserFullLibrary,
     mainViewModel: MainViewModel
 ) {
+
     NavHost(
         navController = navController,
         startDestination = startDestination.route,
         modifier = modifier,
 
         ) {
-        composable(Destination.HOME.route) { HomeScreen(userLibrary = userLibrary) }
+
+
+        composable(Destination.HOME.route) {
+            HomeScreen(
+                userLibrary = userLibrary,
+                mainViewModel = mainViewModel,
+                navController = navController
+            )
+        }
         composable(Destination.LIBRARY.route) {
+            val userLibraryState by mainViewModel.userLibrary.collectAsState()
             libraryScreen(
                 userLibrary = userLibrary,
                 navController = navController,
+                userLibraryState = userLibraryState,
                 mainViewModel = mainViewModel
             )
         }
@@ -193,7 +209,15 @@ fun AppNavHost(
 }
 
 @Composable
-fun HomeScreen(userLibrary: UserFullLibrary) {
+fun HomeScreen(
+    userLibrary: UserFullLibrary,
+    mainViewModel: MainViewModel,
+    navController: NavHostController
+) {
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var itemToDelete by remember { mutableStateOf<MediaItem?>(null) }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -219,7 +243,16 @@ fun HomeScreen(userLibrary: UserFullLibrary) {
                 }
 
 
-                FilledItemCard(item = book, libraryItem = libraryItemInfo)
+                FilledItemCard(
+                    item = book,
+                    libraryItem = libraryItemInfo,
+                    mainViewModel = mainViewModel,
+                    navController = navController,
+                    onDeleteClick = { mediaItem ->
+                        itemToDelete = mediaItem
+                        showDeleteDialog = true
+                    }
+                )
             }
             items(userLibrary.films) { film ->
 
@@ -228,7 +261,16 @@ fun HomeScreen(userLibrary: UserFullLibrary) {
                 }
 
 
-                FilledItemCard(item = film, libraryItem = libraryItemInfo)
+                FilledItemCard(
+                    item = film,
+                    libraryItem = libraryItemInfo,
+                    mainViewModel = mainViewModel,
+                    navController = navController,
+                    onDeleteClick = { mediaItem ->
+                        itemToDelete = mediaItem
+                        showDeleteDialog = true
+                    }
+                )
             }
             items(userLibrary.series) { serie ->
 
@@ -237,66 +279,157 @@ fun HomeScreen(userLibrary: UserFullLibrary) {
                 }
 
 
-                FilledItemCard(item = serie, libraryItem = libraryItemInfo)
+                FilledItemCard(
+                    item = serie,
+                    libraryItem = libraryItemInfo,
+                    mainViewModel = mainViewModel,
+                    navController = navController,
+                    onDeleteClick = { mediaItem ->
+                        itemToDelete = mediaItem
+                        showDeleteDialog = true
+                    }
+                )
             }
         }
 
     }
+    if (showDeleteDialog && itemToDelete != null) {
+        DeleteConfirmationDialog(
+            onDismiss = {
+                showDeleteDialog = false
+                itemToDelete = null
+            },
+            onConfirm = {
+                mainViewModel?.deleteItem(itemToDelete!!)
+                showDeleteDialog = false
+                itemToDelete = null
+            }
+        )
+    }
 }
 
 @Composable
-fun FilledItemCard(item: MediaItem, libraryItem: UserLibraryItem?) {
+fun FilledItemCard(
+    item: MediaItem,
+    libraryItem: UserLibraryItem?,
+    mainViewModel: MainViewModel?,
+    navController: NavHostController,
+    onDeleteClick: (MediaItem) -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Row() {
-                Image(
-                    painter = painterResource(id = R.drawable.melvin_test_image),
-                    contentDescription = "Imagen de Elemento",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RectangleShape) //
-                        .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
-                        dayOfMonth()
-                        char('/')
-                        monthNumber()
-                        char('/')
-                        year()
-                    }
-                    Text(text = "Titulo: ${item.title}", textAlign = TextAlign.Center)
-                    Text(text = "Autor: ${item.author}", textAlign = TextAlign.Center)
-                    Text(text = "Genero: ${item.genre}", textAlign = TextAlign.Center)
-                    Text(text = "Numero de páginas: ${item.dur}", textAlign = TextAlign.Center)
-                    Row() {
-                        Text(text = "Calificación: ", textAlign = TextAlign.Center)
-                        for (i in 1..5)
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 8.dp)
+        ) {
 
-                            Icon(
-                                imageVector = if (i <= libraryItem!!.rating) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                                contentDescription = "Estrella $i",
-                                tint = if (i <= libraryItem.rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+            val (imageRef, contentRef, deleteIconRef) = createRefs()
+
+            Image(
+                painter = painterResource(id = R.drawable.melvin_test_image),
+                contentDescription = "Imagen de Elemento",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RectangleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
+                    .constrainAs(imageRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
                     }
-                    Text(
-                        text = "Fecha de adición: ${libraryItem?.additionDate?.format(dateFormat) ?: "Sin fecha de adición"}",
-                        textAlign = TextAlign.Center
-                    )
+            )
+
+            ItemContent(
+                item = item,
+                libraryItem = libraryItem,
+                modifier = Modifier.constrainAs(contentRef) {
+                    start.linkTo(imageRef.end, margin = 16.dp)
+                    end.linkTo(deleteIconRef.start, margin = 8.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
                 }
+            )
+
+            IconButton(
+                onClick = {
+                    onDeleteClick(item)
+                },
+                modifier = Modifier.constrainAs(deleteIconRef) {
+                    top.linkTo(parent.top, margin = 4.dp)
+                    end.linkTo(parent.end, margin = 4.dp)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Borrar elemento",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
+            dayOfMonth()
+            char('/')
+            monthNumber()
+            char('/')
+            year()
+        }
+
+        Text(text = "Título: ${item.title}", maxLines = 1, overflow = TextOverflow.Ellipsis)
+
+        when (item) {
+            is Book -> {
+                Text(text = "Autor: ${item.author}", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = "Género: ${item.genre}")
+                Text(text = "Páginas: ${item.pages}")
+                Text(text = "Valoraciones: ${item.rating}")
             }
 
+            is Film -> {
+                Text(text = "Director: ${item.director}")
+                Text(text = "Fecha de estreno: ${item.releaseDate}")
+                Text(text = "Valoraciones: ${item.rating}")
+            }
+
+            is Serie -> {
+                Text(text = "Director: ${item.director}")
+                Text(text = "Fecha de estreno: ${item.releaseDate}")
+                Text(text = "Capitulos: ${item.chapters}")
+                Text(text = "Valoraciones: ${item.rating}")
+            }
         }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Calificación: ")
+            for (i in 1..5)
+                Icon(
+                    imageVector = if (i <= libraryItem!!.rating) Icons.Filled.Star else Icons.Outlined.StarBorder,
+                    contentDescription = "Estrella $i",
+                    modifier = Modifier.size(16.dp),
+                    tint = if (i <= libraryItem.rating) Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+        }
+
+        Text(
+            text = "Añadido: ${libraryItem?.additionDate?.format(dateFormat) ?: "N/A"}",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
@@ -565,7 +698,7 @@ fun AddDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchDialog(
+fun LibrarySearch(
     onDismiss: () -> Unit,
     onSave: () -> Unit,
     mainViewModel: MainViewModel,
@@ -603,21 +736,22 @@ fun SearchDialog(
 fun libraryScreen(
     navController: NavHostController,
     userLibrary: UserFullLibrary?,
-    mainViewModel: MainViewModel?
-) {
-    // 1. Estados para controlar la búsqueda
+    mainViewModel: MainViewModel?,
+    userLibraryState: UserFullLibrary?,
+
+    ) {
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var itemToDelete by remember { mutableStateOf<MediaItem?>(null) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            // 3. Cambia la TopAppBar según si la búsqueda está activa o no
             if (isSearchActive) {
-                // --- BARRA DE BÚSQUEDA ACTIVA ---
                 TopAppBar(
                     title = {
-                        // Campo de texto para la búsqueda
                         TextField(
                             value = searchQuery,
                             onValueChange = { searchQuery = it },
@@ -694,21 +828,63 @@ fun libraryScreen(
                 items(filteredBooks) { book ->
                     val libraryItemInfo =
                         libraryItems.find { it.itemId == book.bookTitle && it.itemType == "book" }
-                    FilledItemCard(item = book, libraryItem = libraryItemInfo)
+                    FilledItemCard(
+                        item = book,
+                        libraryItem = libraryItemInfo,
+                        mainViewModel = mainViewModel,
+                        navController = navController,
+                        onDeleteClick = { mediaItem ->
+                            itemToDelete = mediaItem
+                            showDeleteDialog = true
+                        }
+                    )
                 }
                 items(filteredFilms) { film ->
                     val libraryItemInfo =
                         libraryItems.find { it.itemId == film.filmTitle && it.itemType == "film" }
-                    FilledItemCard(item = film, libraryItem = libraryItemInfo)
+                    FilledItemCard(
+                        item = film,
+                        libraryItem = libraryItemInfo,
+                        mainViewModel = mainViewModel,
+                        navController = navController,
+                        onDeleteClick = { mediaItem ->
+                            itemToDelete = mediaItem
+                            showDeleteDialog = true
+                        }
+                    )
                 }
                 items(filteredSeries) { serie ->
                     val libraryItemInfo =
                         libraryItems.find { it.itemId == serie.serieTitle && it.itemType == "serie" }
-                    FilledItemCard(item = serie, libraryItem = libraryItemInfo)
+                    FilledItemCard(
+                        item = serie,
+                        libraryItem = libraryItemInfo,
+                        mainViewModel = mainViewModel,
+                        navController = navController,
+                        onDeleteClick = { mediaItem ->
+                            itemToDelete = mediaItem
+                            showDeleteDialog = true
+                        }
+                    )
                 }
             }
         }
     }
+
+    if (showDeleteDialog && itemToDelete != null) {
+        DeleteConfirmationDialog(
+            onDismiss = {
+                showDeleteDialog = false
+                itemToDelete = null
+            },
+            onConfirm = {
+                mainViewModel?.deleteItem(itemToDelete!!)
+                showDeleteDialog = false
+                itemToDelete = null
+            }
+        )
+    }
+
 }
 
 
@@ -860,6 +1036,36 @@ fun ProfileBody(modifier: Modifier = Modifier) {
         )
     }
 }
+
+@Composable
+fun DeleteConfirmationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Confirmar eliminación")
+        },
+        text = {
+            Text("¿Estás seguro de que quieres eliminar este elemento de tu biblioteca?")
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text("Eliminar")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        })
+}
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.example.proyectofinaldegrado.data.local.dao
 
 import android.content.ClipData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -47,6 +48,7 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLibraryItem(item: UserLibraryItem)
 
-
+    @Query("DELETE FROM user_library WHERE itemId = :itemId AND userName = :userName")
+    suspend fun deleteLibraryItem(userName: String, itemId: String)
 
 }

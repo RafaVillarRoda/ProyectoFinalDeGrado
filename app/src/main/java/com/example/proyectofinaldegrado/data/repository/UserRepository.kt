@@ -92,6 +92,8 @@ class UserRepository(
     }
 
 
-
+    suspend fun deleteItem(user: String, itemId: String) {
+        userDao.deleteLibraryItem(user, itemId)
+    }
 
 }

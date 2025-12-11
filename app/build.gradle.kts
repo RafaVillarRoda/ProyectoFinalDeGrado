@@ -84,17 +84,17 @@ dependencies {
     // Librerías de UI de Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview) // Para las vistas previas en el IDE
-    implementation(libs.androidx.material3) // Para Material Design 3 (incluye el carrusel)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Libreria para manejo de fechas
     implementation(libs.kotlinx.datetime)
 
+    implementation(libs.androidx.constraintlayout.compose)
 
-        // ...
+
     implementation(libs.gson)
 
 
