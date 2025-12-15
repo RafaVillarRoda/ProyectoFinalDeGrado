@@ -6,7 +6,8 @@
     "pages": "1007",
     "rating": 0,
     "releaseDate": "2010-08-31",
-    "additionDate": null
+    "additionDate": null,
+    "poster": "https://m.media-amazon.com/images/I/81pzG7oNfHL._UF1000,1000_QL80_.jpg"
   },
   {
     "bookTitle": "Palabras Radiantes",
@@ -15,7 +16,8 @@
     "pages": "1087",
     "rating": 0,
     "releaseDate": "2014-03-04",
-    "additionDate": null
+    "additionDate": null,
+    "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf1R0N04JmZO0pj6gavJ9ycXjVtyEHVRlDKw&s"
   },
   {
     "bookTitle": "Juramentada",
@@ -24,7 +26,8 @@
     "pages": "1249",
     "rating": 0,
     "releaseDate": "2017-11-14",
-    "additionDate": null
+    "additionDate": null,
+    "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0rN-vR1S-V7F9uO3g66tlSBFqx21P0pLZ3g&s"
   },
   {
     "bookTitle": "El Ritmo de la Guerra",
@@ -33,7 +36,8 @@
     "pages": "1232",
     "rating": 0,
     "releaseDate": "2020-11-17",
-    "additionDate": null
+    "additionDate": null,
+    "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7tgRcfEdFcsCoAutK4aExgVRSEy0Zogcozw&s"
   },
   {
     "bookTitle": "El Imperio Final",
@@ -42,169 +46,7 @@
     "pages": "672",
     "rating": 0,
     "releaseDate": "2006-07-17",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "El Pozo de la Ascensión",
-    "author": "Brandon Sanderson",
-    "genre": "Fantasía",
-    "pages": "786",
-    "rating": 0,
-    "releaseDate": "2007-08-21",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "El Héroe de las Eras",
-    "author": "Brandon Sanderson",
-    "genre": "Fantasía",
-    "pages": "784",
-    "rating": 0,
-    "releaseDate": "2008-10-14",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Aleación de Ley",
-    "author": "Brandon Sanderson",
-    "genre": "Fantasía",
-    "pages": "332",
-    "rating": 0,
-    "releaseDate": "2011-11-08",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Sombras de Identidad",
-    "author": "Brandon Sanderson",
-    "genre": "Fantasía",
-    "pages": "384",
-    "rating": 0,
-    "releaseDate": "2015-10-06",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Brazales de Duelo",
-    "author": "Brandon Sanderson",
-    "genre": "Fantasía",
-    "pages": "448",
-    "rating": 0,
-    "releaseDate": "2016-01-26",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "El Nombre del Viento",
-    "author": "Patrick Rothfuss",
-    "genre": "Fantasía",
-    "pages": "872",
-    "rating": 0,
-    "releaseDate": "2007-03-27",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "El Temor de un Hombre Sabio",
-    "author": "Patrick Rothfuss",
-    "genre": "Fantasía",
-    "pages": "1190",
-    "rating": 0,
-    "releaseDate": "2011-03-01",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "La Música del Silencio",
-    "author": "Patrick Rothfuss",
-    "genre": "Fantasía",
-    "pages": "176",
-    "rating": 0,
-    "releaseDate": "2014-10-28",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Metro 2033",
-    "author": "Dmitry Glukhovsky",
-    "genre": "Ciencia Ficción",
-    "pages": "458",
-    "rating": 0,
-    "releaseDate": "2005-01-01",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Metro 2034",
-    "author": "Dmitry Glukhovsky",
-    "genre": "Ciencia Ficción",
-    "pages": "480",
-    "rating": 0,
-    "releaseDate": "2009-03-01",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Metro 2035",
-    "author": "Dmitry Glukhovsky",
-    "genre": "Ciencia Ficción",
-    "pages": "496",
-    "rating": 0,
-    "releaseDate": "2015-06-12",
-    "additionDate": null
-  },
-
-  {
-    "bookTitle": "Las Voces del Norte",
-    "author": "Óscar Benítez",
-    "genre": "Drama",
-    "pages": "289",
-    "rating": 0,
-    "releaseDate": "2010-09-13",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "El Arte del Silencio",
-    "author": "Julia Ferrer",
-    "genre": "Psicológico",
-    "pages": "241",
-    "rating": 0,
-    "releaseDate": "2012-02-17",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Horizonte Caído",
-    "author": "Fabián Ortega",
-    "genre": "Ciencia Ficción",
-    "pages": "520",
-    "rating": 0,
-    "releaseDate": "2023-06-10",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "La Sombra del Rey",
-    "author": "Cristina López",
-    "genre": "Fantasía",
-    "pages": "430",
-    "rating": 0,
-    "releaseDate": "2016-11-18",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Tiempo Fragmentado",
-    "author": "Samuel Ávila",
-    "genre": "Thriller",
-    "pages": "300",
-    "rating": 0,
-    "releaseDate": "2014-04-02",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "Río de Sangre",
-    "author": "Laura Bermúdez",
-    "genre": "Suspense",
-    "pages": "348",
-    "rating": 0,
-    "releaseDate": "2019-05-30",
-    "additionDate": null
-  },
-  {
-    "bookTitle": "La Forja del Alba",
-    "author": "Andrés Calderón",
-    "genre": "Fantasía",
-    "pages": "412",
-    "rating": 0,
-    "releaseDate": "2012-08-25",
-    "additionDate": null
+    "additionDate": null,
+    "poster": ""
   }
 ]

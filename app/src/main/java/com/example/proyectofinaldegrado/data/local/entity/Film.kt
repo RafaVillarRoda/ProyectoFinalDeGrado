@@ -27,6 +27,10 @@ data class Film(
 
     @ColumnInfo(name = "addition_date")
     val additionDate: String?,
+
+    @ColumnInfo(name = "poster_url")
+    override val poster: String,
+
 ):MediaItem {
     override val title: String
     get() = filmTitle
@@ -36,5 +40,7 @@ data class Film(
     get() = genre
     override val dur: Int
     get() = duration.toIntOrNull() ?: 0
+    val posterr: String
+    get() = poster
 
 }

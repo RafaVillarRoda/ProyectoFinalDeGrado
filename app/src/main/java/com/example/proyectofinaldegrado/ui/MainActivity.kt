@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -65,6 +67,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.proyectofinaldegrado.MyApplication
 import com.example.proyectofinaldegrado.R
 import com.example.proyectofinaldegrado.ui.theme.ProyectoFinalDeGradoTheme
@@ -320,7 +323,7 @@ fun FilledItemCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .height(200.dp)
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -330,12 +333,15 @@ fun FilledItemCard(
 
             val (imageRef, contentRef, deleteIconRef) = createRefs()
 
-            Image(
-                painter = painterResource(id = R.drawable.melvin_test_image),
-                contentDescription = "Imagen de Elemento",
+            AsyncImage(
+                model = item.poster,
+                contentDescription = "Portada de ${item.title}",
+                placeholder = painterResource(id = R.drawable.melvin_test_image),
+                error = painterResource(id = R.drawable.melvin_test_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(120.dp)
+                    .fillMaxHeight()
+                    .width(120.dp)
                     .clip(RectangleShape)
                     .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
                     .constrainAs(imageRef) {
@@ -437,42 +443,41 @@ fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifi
 @Composable
 fun LastestCarousel(userLibrary: UserFullLibrary) {
 
-    val libraryItem = userLibrary.libraryItems
+    val allMediaItems = remember(userLibrary) {
+        userLibrary.books + userLibrary.films + userLibrary.series
+    }
 
+    val latestItems = remember(userLibrary, allMediaItems) {
+        userLibrary.libraryItems
+            .sortedByDescending { it.additionDate }
+            .take(10)
+            .mapNotNull { libraryItem ->
+                allMediaItems.find { mediaItem -> mediaItem.title == libraryItem.itemId }
+            }
+    }
 
-    data class CarouselItem(
-        val id: Int, @DrawableRes val imageResId: Int, val contentDescription: String
-    )
+    if (latestItems.isEmpty()) {
 
-    val items = remember {
-
-
-        val lastAdded = libraryItem.sortedBy { it.additionDate }.takeLast(5)
-
-
-        lastAdded.mapIndexed { index, item ->
-            CarouselItem(
-                id = index,
-                imageResId = R.drawable.melvin_test_image,
-                contentDescription = item.itemId
-            )
-        }
+        return
     }
     HorizontalMultiBrowseCarousel(
-        state = rememberCarouselState { items.count() },
+        state = rememberCarouselState { latestItems.count() },
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
         preferredItemWidth = 186.dp,
         itemSpacing = 8.dp
     ) { i ->
-        val item = items[i]
-        Image(
+        val item = latestItems[i]
+
+        AsyncImage(
+            model = item.poster,
+            contentDescription = item.title,
+            placeholder = painterResource(id = R.drawable.melvin_test_image),
+            error = painterResource(id = R.drawable.melvin_test_image),
             modifier = Modifier
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.extraLarge),
-            painter = painterResource(id = item.imageResId),
-            contentDescription = item.contentDescription,
             contentScale = ContentScale.Crop
         )
     }

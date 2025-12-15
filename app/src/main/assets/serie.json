@@ -6,7 +6,9 @@
     "genre": "Crime",
     "chapters": "62",
     "rating": "5",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMzU5ZGYzNmQtMTdhYy00OGRiLTg0NmQtYjVjNzliZTg1ZGE4XkEyXkFqcGc@._V1_QL75_UX190_CR0,2,190,281_.jpg"
+
   },
   {
     "serieTitle": "Game of Thrones",
@@ -15,7 +17,9 @@
     "genre": "Fantasy",
     "chapters": "73",
     "rating": "4.5",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTNhMDJmNmYtNDQ5OS00ODdlLWE0ZDAtZTgyYTIwNDY3OTU3XkEyXkFqcGc@._V1_.jpg"
+
   },
   {
     "serieTitle": "Stranger Things",
@@ -24,7 +28,8 @@
     "genre": "Sci-Fi",
     "chapters": "34",
     "rating": "4.5",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Stranger_Things_logo.png/250px-Stranger_Things_logo.png"
   },
   {
     "serieTitle": "The Witcher",
@@ -33,107 +38,9 @@
     "genre": "Fantasy",
     "chapters": "24",
     "rating": "4",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "The Mandalorian",
-    "releaseDate": "2019",
-    "director": "Jon Favreau",
-    "genre": "Sci-Fi",
-    "chapters": "24",
-    "rating": "4.5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "The Boys",
-    "releaseDate": "2019",
-    "director": "Eric Kripke",
-    "genre": "Superhero",
-    "chapters": "32",
-    "rating": "4.5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "The Office",
-    "releaseDate": "2005",
-    "director": "Greg Daniels",
-    "genre": "Comedy",
-    "chapters": "201",
-    "rating": "5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Parks and Recreation",
-    "releaseDate": "2009",
-    "director": "Greg Daniels, Michael Schur",
-    "genre": "Comedy",
-    "chapters": "125",
-    "rating": "4.5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Sherlock",
-    "releaseDate": "2010",
-    "director": "Mark Gatiss, Steven Moffat",
-    "genre": "Crime",
-    "chapters": "13",
-    "rating": "5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Dark",
-    "releaseDate": "2017",
-    "director": "Baran bo Odar",
-    "genre": "Sci-Fi",
-    "chapters": "26",
-    "rating": "5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Westworld",
-    "releaseDate": "2016",
-    "director": "Jonathan Nolan, Lisa Joy",
-    "genre": "Sci-Fi",
-    "chapters": "36",
-    "rating": "4",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Chernobyl",
-    "releaseDate": "2019",
-    "director": "Johan Renck",
-    "genre": "Drama",
-    "chapters": "5",
-    "rating": "5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "True Detective",
-    "releaseDate": "2014",
-    "director": "Nic Pizzolatto",
-    "genre": "Crime",
-    "chapters": "32",
-    "rating": "4.5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "Better Call Saul",
-    "releaseDate": "2015",
-    "director": "Vince Gilligan, Peter Gould",
-    "genre": "Crime",
-    "chapters": "63",
-    "rating": "5",
-    "additionDate": ""
-  },
-  {
-    "serieTitle": "House of the Dragon",
-    "releaseDate": "2022",
-    "director": "Ryan Condal",
-    "genre": "Fantasy",
-    "chapters": "10",
-    "rating": "4",
-    "additionDate": ""
-  }
+    "additionDate": "",
+    "poster": "https://es.web.img2.acsta.net/pictures/19/11/22/09/33/5060052.jpg"
 
+  }
 ]
 

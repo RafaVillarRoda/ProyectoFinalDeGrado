@@ -30,7 +30,9 @@ data class Book(
     @ColumnInfo(name = "addition_date")
     var additionDate: Instant?,
 
-): MediaItem {
+    @ColumnInfo(name = "poster_url")
+    override val poster: String,
+    ): MediaItem {
     override val title: String
         get() = bookTitle
     val creator: String
@@ -39,7 +41,8 @@ data class Book(
         get() = genre
     override val dur: Int
         get() = pages
-
+    val posterr: String
+        get() = poster
 }
 
 

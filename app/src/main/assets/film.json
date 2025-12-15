@@ -1,11 +1,13 @@
 [
   {
-    "filmTitle": "Following","releaseDate": "1998-04-02",
+    "filmTitle": "Following",
+    "releaseDate": "1998-04-02",
     "director": "Christopher Nolan",
     "genre": "Thriller",
     "duration": "69 min",
     "rating": "7.4",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTQxYzIwMTAtYjZlNi00YzkwLWI4ZGYtNzNlZjU3N2MyNzI4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
   },
   {
     "filmTitle": "Memento",
@@ -14,7 +16,9 @@
     "genre": "Suspense",
     "duration": "113 min",
     "rating": "8.4",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVBDvw77QvsTxmoSHa9SKX_qYi4cx7futGsw&s"
+
   },
   {
     "filmTitle": "Insomnia",
@@ -23,7 +27,9 @@
     "genre": "Thriller",
     "duration": "118 min",
     "rating": "7.2",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOTE2NzQ0MzQtMDRmZi00ZWRiLWE4MDEtY2M1Mjc3OGY5N2JkXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+
   },
   {
     "filmTitle": "Batman Begins",
@@ -32,80 +38,8 @@
     "genre": "Acción",
     "duration": "140 min",
     "rating": "8.2",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "The Prestige",
-    "releaseDate": "2006-10-20",
-    "director": "Christopher Nolan",
-    "genre": "Misterio",
-    "duration": "130 min",
-    "rating": "8.5",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "The Dark Knight",
-    "releaseDate": "2008-08-13",
-    "director": "Christopher Nolan",
-    "genre": "Acción",
-    "duration": "152 min",
-    "rating": "9.1",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "Inception",
-    "releaseDate": "2010-07-16",
-    "director": "Christopher Nolan",
-    "genre": "Ciencia Ficción",
-    "duration": "148 min",
-    "rating": "8.8",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "The Dark Knight Rises",
-    "releaseDate": "2012-07-20",
-    "director": "Christopher Nolan",
-    "genre": "Acción",
-    "duration": "164 min",
-    "rating": "8.4",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "Interstellar",
-    "releaseDate": "2014-11-07",
-    "director": "Christopher Nolan",
-    "genre": "Ciencia Ficción",
-    "duration": "169 min",
-    "rating": "8.7",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "Dunkirk",
-    "releaseDate": "2017-07-21",
-    "director": "Christopher Nolan",
-    "genre": "Guerra",
-    "duration": "106 min",
-    "rating": "7.8",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "Tenet",
-    "releaseDate": "2020-08-26",
-    "director": "Christopher Nolan",
-    "genre": "Ciencia Ficción",
-    "duration": "150 min",
-    "rating": "7.3",
-    "additionDate": ""
-  },
-  {
-    "filmTitle": "Oppenheimer",
-    "releaseDate": "2023-07-21",
-    "director": "Christopher Nolan",
-    "genre": "Biografía",
-    "duration": "180 min",
-    "rating": "8.3",
-    "additionDate": ""
+    "additionDate": "",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMzA2NDQzZDEtNDU5Ni00YTlkLTg2OWEtYmQwM2Y1YTBjMjFjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+
   }
-
-
 ]

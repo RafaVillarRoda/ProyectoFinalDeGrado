@@ -6,6 +6,9 @@ sealed interface MediaItem {
     val author: String
     val genre: String
     val dur: Int
+
+    val poster: String
+
 }
 
 
