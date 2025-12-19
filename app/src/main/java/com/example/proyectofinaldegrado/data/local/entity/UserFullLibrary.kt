@@ -5,5 +5,6 @@ data class UserFullLibrary(
     val books: List<Book>,
     val films: List<Film>,
     val series: List<Serie>,
+    val games: List<Game>?,
     val libraryItems: List<UserLibraryItem>
 )

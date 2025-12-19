@@ -36,6 +36,10 @@ interface UserDao {
     @Query("SELECT itemId FROM user_library WHERE userName = :userName AND itemType = 'serie'")
     suspend fun getSerieIdsForUser(userName: String): List<String>
 
+    @Query("SELECT itemId FROM user_library WHERE userName = :userName AND itemType = 'steamGame'")
+    suspend fun getSteamGameIdsForUser(userName: String): List<String>
+
+
     @Query("SELECT * FROM user_library WHERE userName = :userName AND itemId = :itemId")
     suspend fun getLibraryItemTitle(userName: String, itemId: String): UserLibraryItem?
 
@@ -50,5 +54,7 @@ interface UserDao {
 
     @Query("DELETE FROM user_library WHERE itemId = :itemId AND userName = :userName")
     suspend fun deleteLibraryItem(userName: String, itemId: String)
+   @Query("UPDATE users SET steamID = :steamID WHERE user_name = :userName")
+    suspend fun updateSteamId(userName: String, steamID: String)
 
 }

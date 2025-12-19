@@ -1,5 +1,7 @@
 package com.example.proyectofinaldegrado.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -23,7 +25,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -34,9 +35,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.*
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
@@ -57,6 +60,9 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -74,6 +80,7 @@ import com.example.proyectofinaldegrado.ui.theme.ProyectoFinalDeGradoTheme
 import com.example.proyectofinaldegrado.SessionManager
 import com.example.proyectofinaldegrado.data.local.entity.Book
 import com.example.proyectofinaldegrado.data.local.entity.Film
+import com.example.proyectofinaldegrado.data.local.entity.Game
 import com.example.proyectofinaldegrado.data.local.entity.MediaItem
 import com.example.proyectofinaldegrado.data.local.entity.Serie
 import com.example.proyectofinaldegrado.data.local.entity.UserFullLibrary
@@ -199,7 +206,7 @@ fun AppNavHost(
                 mainViewModel = mainViewModel
             )
         }
-        composable(Destination.PROFILE.route) { ProfileScreen(navController = navController) }
+        composable(Destination.PROFILE.route) { ProfileScreen(navController = navController, mainViewModel = mainViewModel) }
         dialog(route = Destination.ADD_ITEM.route) {
             AddDialog(
 
@@ -293,6 +300,25 @@ fun HomeScreen(
                     }
                 )
             }
+            if (userLibrary.games != null) {
+                items(userLibrary.games) { game ->
+
+                    val libraryItemInfo = userLibrary.libraryItems.find { li ->
+                        li.itemId == game.name && li.itemType == "game"
+                    }
+
+                    FilledItemCard(
+                        item = game,
+                        libraryItem = libraryItemInfo,
+                        mainViewModel = mainViewModel,
+                        navController = navController,
+                        onDeleteClick = { mediaItem ->
+                            itemToDelete = mediaItem
+                            showDeleteDialog = true
+                        }
+                    )
+                }
+            }
         }
 
     }
@@ -303,7 +329,7 @@ fun HomeScreen(
                 itemToDelete = null
             },
             onConfirm = {
-                mainViewModel?.deleteItem(itemToDelete!!)
+                mainViewModel.deleteItem(itemToDelete!!)
                 showDeleteDialog = false
                 itemToDelete = null
             }
@@ -332,9 +358,13 @@ fun FilledItemCard(
         ) {
 
             val (imageRef, contentRef, deleteIconRef) = createRefs()
-
+            val imageModel = if (item is Game) {
+                "https://steamcdn-a.akamaihd.net/steam/apps/${item.appid}/header.jpg"
+            } else {
+               item.poster
+            }
             AsyncImage(
-                model = item.poster,
+                model = imageModel,
                 contentDescription = "Portada de ${item.title}",
                 placeholder = painterResource(id = R.drawable.melvin_test_image),
                 error = painterResource(id = R.drawable.melvin_test_image),
@@ -418,6 +448,11 @@ fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifi
                 Text(text = "Fecha de estreno: ${item.releaseDate}")
                 Text(text = "Capitulos: ${item.chapters}")
                 Text(text = "Valoraciones: ${item.rating}")
+            }
+
+            is Game -> {
+                Text(text = "Tiempo jugado: ${item.playtimeForever}")
+                Text(text = "AppID: ${item.appid}")
             }
         }
 
@@ -576,6 +611,9 @@ fun AddDialog(
                                     mainViewModel.addSerieToLibrary(itemToSave, rating)
                                     onSave()
                                 }
+
+                                else -> {
+                                }
                             }
                         }
                     }) {
@@ -681,6 +719,8 @@ fun AddDialog(
                         },
                     )
                 }
+
+
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -829,6 +869,10 @@ fun libraryScreen(
                 val filteredSeries = userLibrary.series.filter {
                     it.serieTitle.contains(searchQuery, ignoreCase = true)
                 }
+                val filteredGames = userLibrary.games?.filter {
+                    it.name.contains(searchQuery, ignoreCase = true)
+                }
+
 
                 items(filteredBooks) { book ->
                     val libraryItemInfo =
@@ -872,6 +916,26 @@ fun libraryScreen(
                         }
                     )
                 }
+                if (filteredGames != null) {
+                    items(filteredGames) { game ->
+
+                        val libraryItemInfo = libraryItems.find {
+                            it.itemId == game.name && it.itemType == "game"
+                        }
+
+                        FilledItemCard(
+                            item = game,
+                            libraryItem = libraryItemInfo,
+                            mainViewModel = mainViewModel,
+                            navController = navController,
+                            onDeleteClick = { mediaItem ->
+                                itemToDelete = mediaItem
+                                showDeleteDialog = true
+                            }
+                        )
+                    }
+                }
+
             }
         }
     }
@@ -896,8 +960,12 @@ fun libraryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    mainViewModel: MainViewModel
 ) {
+    val context = LocalContext.current
+    var showApiKeyDialog by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(title = { Text("Perfil") }, navigationIcon = {
@@ -908,15 +976,42 @@ fun ProfileScreen(
                     )
                 }
             }, actions = {
-                IconButton(onClick = { }) {
+                Button(onClick = {
+                    val returnUrl = "https://RafaVillarRoda.github.io/ProyectoFinalDeGrado/auth"
+                    val openIdUrl = "https://steamcommunity.com/openid/login?" +
+                            "openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&" +
+                            "openid.identity=http://specs.openid.net/auth/2.0/identifier_select&" +
+                            "openid.mode=checkid_setup&" +
+                            "openid.ns=http://specs.openid.net/auth/2.0&" +
+                            "openid.return_to=$returnUrl&" +
+                            "openid.realm=$returnUrl"
+
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(openIdUrl))
+                    context.startActivity(intent)
+
+                    showApiKeyDialog = true
+                }) {
                     Icon(
-                        imageVector = Icons.Default.MoreVert, contentDescription = "Opciones"
+                        imageVector = Icons.Default.Sync, contentDescription = "SteamSync"
                     )
+                    Text("SteamSync")
                 }
             })
         }) { contentPadding ->
 
         ProfileBody(modifier = Modifier.padding(contentPadding))
+    }
+
+    if(showApiKeyDialog){
+            ApiKeyDialog(
+                onDismiss = {showApiKeyDialog = false},
+                onConfirm = {apiKey ->
+                    val idToUse = SessionManager.currentUser?.steamID
+                    Log.d("MainViewModel", "URL de consulta: https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=$apiKey&steamid=$idToUse&format=json&include_appinfo=1")
+                    mainViewModel.syncSteamLibrary(idToUse, apiKey.trim())
+                    showApiKeyDialog = false
+                }
+            )
     }
 }
 
@@ -1068,6 +1163,61 @@ fun DeleteConfirmationDialog(
                 Text("Cancelar")
             }
         })
+}
+
+@Composable
+fun ApiKeyDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var apiKeyText by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Vincular Steam")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Introduce tu API key de Steam para sincronizar tus juegos.")
+
+                OutlinedTextField(
+                    value = apiKeyText,
+                    onValueChange = { apiKeyText = it },
+                    label = { Text("Steam API Key") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+
+                        val description = if (passwordVisible) "Ocultar clave" else "Mostrar clave"
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(imageVector = image, contentDescription = description)
+                        }
+                    }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(apiKeyText) },
+                enabled = apiKeyText.isNotBlank()
+            ) {
+                Text("Sincronizar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
 
 

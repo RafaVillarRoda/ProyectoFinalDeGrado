@@ -74,7 +74,7 @@ dependencies {
 
     // Integración de Compose con Activity
     implementation(libs.androidx.activity.compose)
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    implementation(libs.androidx.compose.material.icons.extended.android)
 
 
     // Bill of Materials (BOM) para gestionar las versiones de Compose
@@ -98,6 +98,12 @@ dependencies {
     implementation(libs.gson)
 
     implementation(libs.coil.compose)
+
+    implementation(libs.retrofit.v290)
+    implementation(libs.converter.gson.v290)
+    implementation(libs.converter.scalars)
+    implementation(libs.logging.interceptor.v4110)
+
 
 
 

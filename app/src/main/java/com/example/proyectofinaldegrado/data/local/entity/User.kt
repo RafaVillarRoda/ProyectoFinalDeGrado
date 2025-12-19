@@ -19,5 +19,8 @@ data class User(
     @ColumnInfo(name = "start_date")
     val startDate: Instant,
 
+    @ColumnInfo(name = "SteamID")
+    var steamID: String? = null,
+
 
     )

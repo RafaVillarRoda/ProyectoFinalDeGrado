@@ -10,10 +10,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.proyectofinaldegrado.data.local.dao.BookDao
 import com.example.proyectofinaldegrado.data.local.dao.FilmDao
 import com.example.proyectofinaldegrado.data.local.dao.SerieDao
+import com.example.proyectofinaldegrado.data.local.dao.SteamGamesDao
 import com.example.proyectofinaldegrado.data.local.dao.UserDao
 import com.example.proyectofinaldegrado.data.local.entity.Book
 import com.example.proyectofinaldegrado.data.local.entity.Film
 import com.example.proyectofinaldegrado.data.local.entity.Serie
+import com.example.proyectofinaldegrado.data.local.entity.Game
 import com.example.proyectofinaldegrado.data.local.entity.User
 import com.example.proyectofinaldegrado.data.local.entity.UserLibraryItem
 import com.google.gson.Gson
@@ -22,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.InputStreamReader
 
-@Database(entities = [User::class, Film::class, Serie::class, Book::class, UserLibraryItem::class], version = 15, exportSchema = false)
+@Database(entities = [User::class, Film::class, Serie::class, Book::class, UserLibraryItem::class, Game::class], version = 15, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -30,6 +32,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun filmDao(): FilmDao
     abstract fun serieDao(): SerieDao
     abstract fun bookDao(): BookDao
+
+    abstract fun steamGamesDao(): SteamGamesDao
+
+
 
 
     private class DatabaseCallback(

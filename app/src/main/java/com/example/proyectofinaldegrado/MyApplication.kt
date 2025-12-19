@@ -18,7 +18,10 @@ class MyApplication : Application() {
     }
 
     val userRepository: UserRepository by lazy {
-        UserRepository(database.userDao(), database.bookDao(), database.filmDao(), database.serieDao())
+        UserRepository(
+            database.userDao(), database.bookDao(), database.filmDao(), database.serieDao(),
+            steamGamesDao = database.steamGamesDao()
+        )
     }
 
     override fun onCreate() {

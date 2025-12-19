@@ -16,7 +16,6 @@ object SessionManager {
     private var sharedPreferences: SharedPreferences? = null
 
     var currentUser: User? = null
-        private set
 
     fun init(context: Context) {
         if (sharedPreferences == null) {

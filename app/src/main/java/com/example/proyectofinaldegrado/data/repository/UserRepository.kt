@@ -3,13 +3,16 @@ package com.example.proyectofinaldegrado.data.repository
 import com.example.proyectofinaldegrado.data.local.dao.BookDao
 import com.example.proyectofinaldegrado.data.local.dao.FilmDao
 import com.example.proyectofinaldegrado.data.local.dao.SerieDao
+import com.example.proyectofinaldegrado.data.local.dao.SteamGamesDao
 import com.example.proyectofinaldegrado.data.local.dao.UserDao
 import com.example.proyectofinaldegrado.data.local.entity.Book
 import com.example.proyectofinaldegrado.data.local.entity.Film
 import com.example.proyectofinaldegrado.data.local.entity.Serie
+import com.example.proyectofinaldegrado.data.local.entity.Game
 import com.example.proyectofinaldegrado.data.local.entity.User
 import com.example.proyectofinaldegrado.data.local.entity.UserFullLibrary
 import com.example.proyectofinaldegrado.data.local.entity.UserLibraryItem
+import kotlinx.datetime.Clock
 import kotlin.collections.emptyList
 
 /**
@@ -19,7 +22,8 @@ class UserRepository(
     private val userDao: UserDao,
     private val bookDao: BookDao,
     private val filmDao: FilmDao,
-    private val serieDao: SerieDao
+    private val serieDao: SerieDao,
+    private val steamGamesDao: SteamGamesDao
 ) {
 
     /**
@@ -46,20 +50,34 @@ class UserRepository(
         val bookIds = userDao.getBookIdsForUser(userName)
         val filmIds = userDao.getFilmIdsForUser(userName)
         val serieIds = userDao.getSerieIdsForUser(userName)
+        val gamesIds = userDao.getSteamGameIdsForUser(userName)
+
 
         val books = if (bookIds.isNotEmpty()) bookDao.getBookByTitle(bookIds) else emptyList()
         val films = if (filmIds.isNotEmpty()) filmDao.getFilmByTitle(filmIds) else emptyList()
         val series =
             if (serieIds.isNotEmpty()) serieDao.getSerieBySerieTitle(serieIds) else emptyList()
 
+
         val libraryItems = userDao.getLibraryItemsForUser(userName)
 
+        val steamGameNames = libraryItems
+            .filter { it.itemType == "game" }
+            .map { it.itemId }
+
+        //Cambiar esto
+        val games = if (steamGameNames.isNotEmpty()) {
+            steamGamesDao.getGamesByNames(steamGameNames)
+        } else {
+            emptyList()
+        }
 
         return UserFullLibrary(
             user = user,
             books = books,
             films = films,
             series = series,
+            games = games,
             libraryItems = libraryItems
         )
 
@@ -96,4 +114,32 @@ class UserRepository(
         userDao.deleteLibraryItem(user, itemId)
     }
 
+    suspend fun insertSteamGames(games: List<Game>) {
+        steamGamesDao.upsertSteamGame(games)
+
+
+        games.forEach { game ->
+            val libraryItem = UserLibraryItem(
+                userName = game.userName,
+                itemId = game.name,
+                itemType = "game",
+                rating = 0,
+                additionDate = Clock.System.now()
+            )
+
+            if (userDao.getLibraryItemTitle(game.userName, libraryItem.itemId) == null) {
+                userDao.insertLibraryItem(libraryItem)
+            }
+        }
+    }
+
+    suspend fun updateSteamId(userName: String, steamId: String) {
+        userDao.updateSteamId(userName, steamId)
+    }
+
+
+    suspend fun deleteGamesByUser(userName: String) {
+        steamGamesDao.deleteAllSteamGames(userName)
+
+    }
 }

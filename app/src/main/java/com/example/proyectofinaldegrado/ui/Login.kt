@@ -39,7 +39,7 @@ class Login : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModels {
 
         val database = AppDatabase.getDatabase(applicationContext, CoroutineScope(coroutineContext))
-        val repository = UserRepository(database.userDao(), database.bookDao(), database.filmDao(), database.serieDao())
+        val repository = UserRepository(database.userDao(), database.bookDao(), database.filmDao(), database.serieDao(), database.steamGamesDao())
         LoginViewModelFactory(repository)
     }
 

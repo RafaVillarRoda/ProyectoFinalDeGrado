@@ -32,6 +32,7 @@ data class Book(
 
     @ColumnInfo(name = "poster_url")
     override val poster: String,
+
     ): MediaItem {
     override val title: String
         get() = bookTitle

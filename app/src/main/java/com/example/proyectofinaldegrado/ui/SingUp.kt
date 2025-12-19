@@ -25,7 +25,7 @@ class SingUp : AppCompatActivity() {
     @OptIn(DelicateCoroutinesApi::class)
     private val signUpViewModel: SingUpViewModel by viewModels {
         val database = AppDatabase.getDatabase(applicationContext, CoroutineScope(coroutineContext))
-        val repository = UserRepository(database.userDao(), database.bookDao(), database.filmDao(), database.serieDao())
+        val repository = UserRepository(database.userDao(), database.bookDao(), database.filmDao(), database.serieDao(), database.steamGamesDao())
         SingUpViewModelFactory(repository)
     }
 
