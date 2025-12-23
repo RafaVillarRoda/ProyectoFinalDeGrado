@@ -218,6 +218,14 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
             }
         }
     }
+    fun editNickname(newNickname: String) {
+        viewModelScope.launch {
+            val user = SessionManager.currentUser
+            if (user != null) {
+                userRepository.editNickname(user.userName, newNickname)
 
+            }
+        }
+    }
 }
 

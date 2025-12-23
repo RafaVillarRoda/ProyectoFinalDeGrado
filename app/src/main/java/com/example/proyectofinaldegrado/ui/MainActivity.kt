@@ -35,6 +35,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Sync
@@ -206,7 +207,12 @@ fun AppNavHost(
                 mainViewModel = mainViewModel
             )
         }
-        composable(Destination.PROFILE.route) { ProfileScreen(navController = navController, mainViewModel = mainViewModel) }
+        composable(Destination.PROFILE.route) {
+            ProfileScreen(
+                navController = navController,
+                mainViewModel = mainViewModel
+            )
+        }
         dialog(route = Destination.ADD_ITEM.route) {
             AddDialog(
 
@@ -361,7 +367,7 @@ fun FilledItemCard(
             val imageModel = if (item is Game) {
                 "https://steamcdn-a.akamaihd.net/steam/apps/${item.appid}/header.jpg"
             } else {
-               item.poster
+                item.poster
             }
             AsyncImage(
                 model = imageModel,
@@ -999,19 +1005,22 @@ fun ProfileScreen(
             })
         }) { contentPadding ->
 
-        ProfileBody(modifier = Modifier.padding(contentPadding))
+        ProfileBody(modifier = Modifier.padding(contentPadding), mainViewModel = mainViewModel)
     }
 
-    if(showApiKeyDialog){
-            ApiKeyDialog(
-                onDismiss = {showApiKeyDialog = false},
-                onConfirm = {apiKey ->
-                    val idToUse = SessionManager.currentUser?.steamID
-                    Log.d("MainViewModel", "URL de consulta: https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=$apiKey&steamid=$idToUse&format=json&include_appinfo=1")
-                    mainViewModel.syncSteamLibrary(idToUse, apiKey.trim())
-                    showApiKeyDialog = false
-                }
-            )
+    if (showApiKeyDialog) {
+        ApiKeyDialog(
+            onDismiss = { showApiKeyDialog = false },
+            onConfirm = { apiKey ->
+                val idToUse = SessionManager.currentUser?.steamID
+                Log.d(
+                    "MainViewModel",
+                    "URL de consulta: https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=$apiKey&steamid=$idToUse&format=json&include_appinfo=1"
+                )
+                mainViewModel.syncSteamLibrary(idToUse, apiKey.trim())
+                showApiKeyDialog = false
+            }
+        )
     }
 }
 
@@ -1088,8 +1097,9 @@ fun FilteredSearchBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileBody(modifier: Modifier = Modifier) {
-
+fun ProfileBody(modifier: Modifier = Modifier, mainViewModel: MainViewModel) {
+    var showEditNicknameDialog by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -1111,11 +1121,27 @@ fun ProfileBody(modifier: Modifier = Modifier) {
                     .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
             )
             Log.d("SessionDebug", "ProfileBody: Mostrando usuario: ${SessionManager.currentUser}")
-            Text(
+            Row() {
+                Text(
+                    text = SessionManager.currentUser?.userName ?: "Invitado",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                IconButton(
+                    onClick = {
+                        showEditNicknameDialog = true
 
-                text = SessionManager.currentUser?.userName ?: "Invitado",
-                style = MaterialTheme.typography.headlineSmall
-            )
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar perfil",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+
         }
 
 
@@ -1133,6 +1159,18 @@ fun ProfileBody(modifier: Modifier = Modifier) {
         Text(
             text = SessionManager.currentUser?.startDate?.format(dateFormat)
                 ?: "Sin fecha de inicio", style = MaterialTheme.typography.bodyMedium
+        )
+    }
+    if (showEditNicknameDialog) {
+        EditNickname(
+            onDismiss = {showEditNicknameDialog = false},
+            onConfirm = { newNick ->
+                val userName = SessionManager.currentUser?.userName
+                mainViewModel.editNickname(newNick)
+                SessionManager.currentUser = SessionManager.currentUser?.copy(userName = newNick)
+                showEditNicknameDialog = false
+
+            }
         )
     }
 }
@@ -1210,6 +1248,47 @@ fun ApiKeyDialog(
                 enabled = apiKeyText.isNotBlank()
             ) {
                 Text("Sincronizar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditNickname(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var newNick by rememberSaveable { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Editar Nickname")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Introduce tu nuevo Nickname:")
+
+                OutlinedTextField(
+                    value = newNick,
+                    onValueChange = { newNick = it },
+                    label = { Text("Nickname") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(newNick) },
+                enabled = newNick.isNotBlank()
+            ) {
+                Text("Guardar")
             }
         },
         dismissButton = {

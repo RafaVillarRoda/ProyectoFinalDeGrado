@@ -10,7 +10,7 @@ import kotlinx.datetime.Instant
 data class User(
     @PrimaryKey
     @ColumnInfo(name = "user_name")
-    val userName: String,
+    var userName: String,
 
 
     @ColumnInfo(name = "password_hash")

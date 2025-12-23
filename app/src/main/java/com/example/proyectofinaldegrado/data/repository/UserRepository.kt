@@ -142,4 +142,9 @@ class UserRepository(
         steamGamesDao.deleteAllSteamGames(userName)
 
     }
+
+    suspend fun editNickname(userName: String, newNickname: String) {
+        userDao.editNickname(userName, newNickname)
+        userDao.updateNicknameInLibrary(userName, newNickname)
+    }
 }

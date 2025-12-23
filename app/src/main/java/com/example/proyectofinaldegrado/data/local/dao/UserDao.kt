@@ -56,5 +56,8 @@ interface UserDao {
     suspend fun deleteLibraryItem(userName: String, itemId: String)
    @Query("UPDATE users SET steamID = :steamID WHERE user_name = :userName")
     suspend fun updateSteamId(userName: String, steamID: String)
-
+    @Query("UPDATE users SET user_name = :newNickname WHERE user_name = :userName")
+    suspend fun editNickname(userName: String, newNickname: String)
+    @Query("UPDATE user_library SET userName = :newUserName WHERE userName = :userName")
+    suspend fun updateNicknameInLibrary(userName: String, newUserName: String)
 }
