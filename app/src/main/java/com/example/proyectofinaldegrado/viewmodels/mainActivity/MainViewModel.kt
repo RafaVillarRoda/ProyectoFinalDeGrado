@@ -59,7 +59,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemId = book.bookTitle,
                     itemType = "book",
                     rating = userRating,
-                    additionDate = Clock.System.now()
+                    additionDate = Clock.System.now(),
+                    genre = book.genre
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 
@@ -76,7 +77,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemId = film.filmTitle,
                     itemType = "film",
                     rating = userRating,
-                    additionDate = Clock.System.now()
+                    additionDate = Clock.System.now(),
+                    genre = film.genre
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 
@@ -93,7 +95,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemId = serie.serieTitle,
                     itemType = "serie",
                     rating = userRating,
-                    additionDate = Clock.System.now()
+                    additionDate = Clock.System.now(),
+                    genre = serie.genre
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 
@@ -193,15 +196,14 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                             name = game.name ?: "Unknown Game",
                             userName = user.userName,
                             playtimeForever = game.playtime_forever/60,
-                            imgIconUrl = game.img_icon_url
+                            imgIconUrl = game.img_icon_url,
+                            genre = "No clasificado"
                         )
                     }
 
-                    // Operaciones en Base de Datos
                     userRepository.deleteGamesByUser(user.userName)
                     userRepository.insertSteamGames(steamGameEntities)
 
-                    // Actualizar la librería local (StateFlow)
                     loadUserLibrary()
 
                     Log.d("MainViewModel", "Sincronización completada y guardada en DB.")

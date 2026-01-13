@@ -422,8 +422,11 @@ fun FilledItemCard(
 @Composable
 fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+
     ) {
         val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
             dayOfMonth()
@@ -440,25 +443,27 @@ fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifi
                 Text(text = "Autor: ${item.author}", maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(text = "Género: ${item.genre}")
                 Text(text = "Páginas: ${item.pages}")
-                Text(text = "Valoraciones: ${item.rating}")
+                Log.d("SessionDebug", "ProfileBody: Mostrando rating: ${item.rating}")
+
             }
 
             is Film -> {
                 Text(text = "Director: ${item.director}")
                 Text(text = "Fecha de estreno: ${item.releaseDate}")
-                Text(text = "Valoraciones: ${item.rating}")
+                Text(text = "Genero: ${item.genre}")
             }
 
             is Serie -> {
                 Text(text = "Director: ${item.director}")
                 Text(text = "Fecha de estreno: ${item.releaseDate}")
                 Text(text = "Capitulos: ${item.chapters}")
-                Text(text = "Valoraciones: ${item.rating}")
+                Text(text = "Genero: ${item.genre}")
             }
 
             is Game -> {
                 Text(text = "Tiempo jugado: ${item.playtimeForever}")
                 Text(text = "AppID: ${item.appid}")
+                Text(text = "Genero: ${item.genre}")
             }
         }
 
@@ -868,15 +873,22 @@ fun libraryScreen(
 
                 val filteredBooks = userLibrary.books.filter {
                     it.bookTitle.contains(searchQuery, ignoreCase = true)
+                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredFilms = userLibrary.films.filter {
                     it.filmTitle.contains(searchQuery, ignoreCase = true)
+                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredSeries = userLibrary.series.filter {
                     it.serieTitle.contains(searchQuery, ignoreCase = true)
+                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredGames = userLibrary.games?.filter {
                     it.name.contains(searchQuery, ignoreCase = true)
+                    it.genre.contains(searchQuery, ignoreCase = true)
                 }
 
 
@@ -1163,7 +1175,7 @@ fun ProfileBody(modifier: Modifier = Modifier, mainViewModel: MainViewModel) {
     }
     if (showEditNicknameDialog) {
         EditNickname(
-            onDismiss = {showEditNicknameDialog = false},
+            onDismiss = { showEditNicknameDialog = false },
             onConfirm = { newNick ->
                 val userName = SessionManager.currentUser?.userName
                 mainViewModel.editNickname(newNick)

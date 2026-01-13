@@ -12,6 +12,7 @@ data class UserLibraryItem(
     val itemId: String,
     val itemType: String,
     val rating: Int,
-    val additionDate: Instant?
+    val additionDate: Instant?,
+    val genre: String
 
 )

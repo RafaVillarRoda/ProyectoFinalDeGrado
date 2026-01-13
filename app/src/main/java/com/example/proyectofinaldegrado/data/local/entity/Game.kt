@@ -25,13 +25,17 @@ data class Game(
     @ColumnInfo(name = "img_icon_url")
     val imgIconUrl: String?,
 
-):  MediaItem {
+    @ColumnInfo(name = "genre")
+    override val genre: String,
+
+
+    ):  MediaItem {
     override val title: String
         get() = name
     override val author: String
         get() = ""
-    override val genre: String
-        get() = ""
+    val genr: String
+        get() = genre
     override val dur: Int
         get() = playtimeForever
     override val poster: String?
