@@ -241,7 +241,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
-
+        val itemLimit = 3
         if (userLibrary.libraryItems.isNotEmpty()) {
             item {
 
@@ -252,25 +252,23 @@ fun HomeScreen(
 
         if (userLibrary.libraryItems.isNotEmpty()) {
             val libraryItem = userLibrary.libraryItems
-            items(userLibrary.books) { book ->
+            items(userLibrary.books.take(itemLimit)) { book ->
 
-                val libraryItemInfo = libraryItem.find { libraryItem ->
-                    libraryItem.itemId == book.bookTitle && libraryItem.itemType == "book"
-                }
-
-
-                FilledItemCard(
-                    item = book,
-                    libraryItem = libraryItemInfo,
-                    mainViewModel = mainViewModel,
-                    navController = navController,
-                    onDeleteClick = { mediaItem ->
-                        itemToDelete = mediaItem
-                        showDeleteDialog = true
+                    val libraryItemInfo = libraryItem.find { libraryItem ->
+                        libraryItem.itemId == book.bookTitle && libraryItem.itemType == "book"
                     }
-                )
+                    FilledItemCard(
+                        item = book,
+                        libraryItem = libraryItemInfo,
+                        mainViewModel = mainViewModel,
+                        navController = navController,
+                        onDeleteClick = { mediaItem ->
+                            itemToDelete = mediaItem
+                            showDeleteDialog = true
+                        })
+
             }
-            items(userLibrary.films) { film ->
+            items(userLibrary.films.take(itemLimit)) { film ->
 
                 val libraryItemInfo = libraryItem.find { libraryItem ->
                     libraryItem.itemId == film.filmTitle && libraryItem.itemType == "film"
@@ -288,7 +286,7 @@ fun HomeScreen(
                     }
                 )
             }
-            items(userLibrary.series) { serie ->
+            items(userLibrary.series.take(itemLimit)) { serie ->
 
                 val libraryItemInfo = libraryItem.find { libraryItem ->
                     libraryItem.itemId == serie.serieTitle && libraryItem.itemType == "serie"
@@ -307,8 +305,8 @@ fun HomeScreen(
                 )
             }
             if (userLibrary.games != null) {
-                items(userLibrary.games) { game ->
-
+                items(userLibrary.games.take(itemLimit)) { game ->
+                    for (i in 0..6) {}
                     val libraryItemInfo = userLibrary.libraryItems.find { li ->
                         li.itemId == game.name && li.itemType == "game"
                     }
@@ -427,7 +425,7 @@ fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifi
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(4.dp),
 
-    ) {
+        ) {
         val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
             dayOfMonth()
             char('/')
@@ -461,8 +459,7 @@ fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifi
             }
 
             is Game -> {
-                Text(text = "Tiempo jugado: ${item.playtimeForever}")
-                Text(text = "AppID: ${item.appid}")
+                Text(text = "Horas jugadas: ${item.playtimeForever}")
                 Text(text = "Genero: ${item.genre}")
             }
         }
@@ -872,23 +869,22 @@ fun libraryScreen(
                 val libraryItems = userLibrary.libraryItems
 
                 val filteredBooks = userLibrary.books.filter {
-                    it.bookTitle.contains(searchQuery, ignoreCase = true)
-                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.bookTitle.contains(searchQuery, ignoreCase = true) ||
+                    it.genre.contains(searchQuery, ignoreCase = true) ||
                     it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredFilms = userLibrary.films.filter {
-                    it.filmTitle.contains(searchQuery, ignoreCase = true)
-                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.filmTitle.contains(searchQuery, ignoreCase = true) ||
+                    it.genre.contains(searchQuery, ignoreCase = true) ||
                     it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredSeries = userLibrary.series.filter {
-                    it.serieTitle.contains(searchQuery, ignoreCase = true)
-                    it.genre.contains(searchQuery, ignoreCase = true)
+                    it.serieTitle.contains(searchQuery, ignoreCase = true) ||
+                    it.genre.contains(searchQuery, ignoreCase = true) ||
                     it.author.contains(searchQuery, ignoreCase = true)
                 }
                 val filteredGames = userLibrary.games?.filter {
                     it.name.contains(searchQuery, ignoreCase = true)
-                    it.genre.contains(searchQuery, ignoreCase = true)
                 }
 
 
