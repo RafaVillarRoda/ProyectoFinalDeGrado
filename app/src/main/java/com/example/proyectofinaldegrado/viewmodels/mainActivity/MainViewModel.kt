@@ -51,7 +51,7 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    fun addBookToLibrary(book: Book, userRating: Int) {
+    fun addBookToLibrary(book: Book, userRating: Int, userComments: String) {
         SessionManager.currentUser?.let { user ->
             viewModelScope.launch {
                 val libraryItem = UserLibraryItem(
@@ -60,7 +60,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemType = "book",
                     rating = userRating,
                     additionDate = Clock.System.now(),
-                    genre = book.genre
+                    genre = book.genre,
+                    comments = userComments
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 
@@ -69,7 +70,7 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    fun addFilmToLibrary(film: Film, userRating: Int) {
+    fun addFilmToLibrary(film: Film, userRating: Int, userComments: String) {
         SessionManager.currentUser?.let { user ->
             viewModelScope.launch {
                 val libraryItem = UserLibraryItem(
@@ -78,7 +79,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemType = "film",
                     rating = userRating,
                     additionDate = Clock.System.now(),
-                    genre = film.genre
+                    genre = film.genre,
+                    comments = userComments
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 
@@ -87,7 +89,7 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    fun addSerieToLibrary(serie: Serie, userRating: Int) {
+    fun addSerieToLibrary(serie: Serie, userRating: Int, userComments: String) {
         SessionManager.currentUser?.let { user ->
             viewModelScope.launch {
                 val libraryItem = UserLibraryItem(
@@ -96,7 +98,8 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
                     itemType = "serie",
                     rating = userRating,
                     additionDate = Clock.System.now(),
-                    genre = serie.genre
+                    genre = serie.genre,
+                    comments = userComments
                 )
                 userRepository.addItemToUserLibrary(libraryItem)
 

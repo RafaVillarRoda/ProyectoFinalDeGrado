@@ -125,7 +125,8 @@ class UserRepository(
                 itemType = "game",
                 rating = 0,
                 additionDate = Clock.System.now(),
-                genre = game.genre
+                genre = game.genre,
+                comments = ""
             )
 
             if (userDao.getLibraryItemTitle(game.userName, libraryItem.itemId) == null) {

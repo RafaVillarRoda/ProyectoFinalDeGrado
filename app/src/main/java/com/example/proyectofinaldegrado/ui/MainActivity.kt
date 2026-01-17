@@ -337,8 +337,12 @@ fun HomeScreen(
                     )
                 }
             }
-        }
+        }else {
 
+            item {
+                Text(text = "No hay elementos en tu biblioteca")
+            }
+        }
     }
     if (showDeleteDialog && itemToDelete != null) {
         DeleteConfirmationDialog(
@@ -432,64 +436,7 @@ fun ItemDetailDialog(
                         contentScale = ContentScale.Crop
                     )
 
-                    val dateFormat: DateTimeFormat<DateTimeComponents> = DateTimeComponents.Format {
-                        dayOfMonth()
-                        char('/')
-                        monthNumber()
-                        char('/')
-                        year()
-                    }
-
-                    when (item) {
-                        is Book -> {
-                            Text(
-                                text = "Autor: ${item.author}",
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(text = "Género: ${item.genre}")
-                            Text(text = "Páginas: ${item.pages}")
-
-                        }
-
-                        is Film -> {
-                            Text(text = "Director: ${item.director}")
-                            Text(text = "Fecha de estreno: ${item.releaseDate}")
-                            Text(text = "Genero: ${item.genre}")
-                        }
-
-                        is Serie -> {
-                            Text(text = "Director: ${item.director}")
-                            Text(text = "Fecha de estreno: ${item.releaseDate}")
-                            Text(text = "Capitulos: ${item.chapters}")
-                            Text(text = "Genero: ${item.genre}")
-                        }
-
-                        is Game -> {
-                            Text(text = "Horas jugadas: ${item.playtimeForever}")
-                            Text(text = "Genero: ${item.genre}")
-                        }
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Calificación: ")
-                        if(libraryItem.rating == 0){
-                            Text(text = "Sin calificar")
-                        }else {
-                            for (i in 1..5)
-                                Icon(
-                                    imageVector = if (i <= libraryItem!!.rating) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                                    contentDescription = "Estrella $i",
-                                    modifier = Modifier.size(16.dp),
-                                    tint = if (i <= libraryItem.rating) Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                        }
-
-                    }
-
-                    Text(
-                        text = "Añadido: ${libraryItem.additionDate?.format(dateFormat) ?: "N/A"}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    ItemContent(item = item, libraryItem = libraryItem, modifier = Modifier)
                 }
             }
         }
@@ -578,8 +525,7 @@ fun ItemDetailDialog(
     fun ItemContent(item: MediaItem, libraryItem: UserLibraryItem?, modifier: Modifier = Modifier) {
         Column(
             modifier = modifier
-                .padding(vertical = 8.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
 
             ) {
@@ -640,7 +586,8 @@ fun ItemDetailDialog(
                 }
 
             }
-
+            Text(text = "Comentarios:")
+            TextField(value = libraryItem?.comments ?: "Sin comentarios", onValueChange = {}, readOnly = true)
             Text(
                 text = "Añadido: ${libraryItem?.additionDate?.format(dateFormat) ?: "N/A"}",
                 style = MaterialTheme.typography.bodySmall
@@ -742,6 +689,7 @@ fun ItemDetailDialog(
 
         val itemTypes = listOf("Libro", "Película", "Serie")
         var selectedItemType by rememberSaveable { mutableStateOf(itemTypes.first()) }
+        var synopsisText by rememberSaveable { mutableStateOf("") }
 
         val context = LocalContext.current
 
@@ -776,17 +724,17 @@ fun ItemDetailDialog(
                             } else {
                                 when (itemToSave) {
                                     is Book -> {
-                                        mainViewModel.addBookToLibrary(itemToSave, rating)
+                                        mainViewModel.addBookToLibrary(itemToSave, rating, synopsisText)
                                         onSave()
                                     }
 
                                     is Film -> {
-                                        mainViewModel.addFilmToLibrary(itemToSave, rating)
+                                        mainViewModel.addFilmToLibrary(itemToSave, rating, synopsisText)
                                         onSave()
                                     }
 
                                     is Serie -> {
-                                        mainViewModel.addSerieToLibrary(itemToSave, rating)
+                                        mainViewModel.addSerieToLibrary(itemToSave, rating, synopsisText)
                                         onSave()
                                     }
 
@@ -901,8 +849,6 @@ fun ItemDetailDialog(
 
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 if (selectedItem != null) {
                     Text(
                         "Calificación para '${selectedItem?.title}'",
@@ -913,6 +859,18 @@ fun ItemDetailDialog(
                         onRatingChanged = { newRating -> rating = newRating }
                     )
                 }
+
+                OutlinedTextField(
+                    value = synopsisText,
+                    onValueChange = { synopsisText = it },
+                    label = { Text("Añadir notas o sinopsis (Opcional)") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    singleLine = false,
+                    maxLines = 5
+                )
+
             }
 
         }
